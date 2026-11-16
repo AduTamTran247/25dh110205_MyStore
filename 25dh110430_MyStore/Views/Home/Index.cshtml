@@ -1,0 +1,350 @@
+﻿@model _25dh110205_MyStore.Models.HomeProductVM
+@{
+    ViewBag.Title = "Customer Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // Hoặc layout tương ứng của bạn
+}
+<style>
+
+/* ================================
+   CUSTOMER HOME PAGE
+================================ */
+
+body {
+    background: #f5f5f5;
+}
+
+/* ================================
+   BANNER SLIDER
+================================ */
+
+.banner-slider {
+    position: relative;
+    width: 100%;
+    max-width: 1400px;
+    height: 420px;
+    margin: 20px auto 35px;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #222;
+}
+
+.banner-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.7s ease;
+}
+
+.banner-slide.active {
+    opacity: 1;
+    visibility: visible;
+    z-index: 1;
+}
+
+.banner-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.banner-slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0,0,0,0.75),
+        rgba(0,0,0,0.1)
+    );
+}
+
+.banner-content {
+    position: absolute;
+    top: 50%;
+    left: 7%;
+    transform: translateY(-50%);
+    z-index: 2;
+    color: white;
+    max-width: 550px;
+}
+
+.banner-content h1 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.3;
+    margin-bottom: 18px;
+}
+
+.banner-content p {
+    font-size: 17px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.banner-btn {
+    display: inline-block;
+    padding: 13px 30px;
+    background: #ee4d2d;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    transition: 0.3s;
+}
+
+.banner-btn:hover {
+    background: #d73211;
+    color: white;
+    text-decoration: none;
+}
+
+/* Nút chuyển banner */
+
+.banner-prev,
+.banner-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.4);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.banner-prev {
+    left: 15px;
+}
+
+.banner-next {
+    right: 15px;
+}
+
+.banner-prev:hover,
+.banner-next:hover {
+    background: #ee4d2d;
+}
+
+/* Dấu chấm banner */
+
+.banner-dots {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 4;
+}
+
+.banner-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+}
+
+.banner-dot.active {
+    background: #ee4d2d;
+    transform: scale(1.3);
+}
+
+/* ================================
+   SEARCH PRODUCT
+================================ */
+
+.searchProd {
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    padding: 25px 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.searchProd h2 {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 22px;
+}
+
+.search-container {
+    display: flex;
+    max-width: 850px;
+    margin: auto;
+    gap: 10px;
+}
+
+.search-input {
+    flex: 1;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    outline: none;
+    font-size: 15px;
+    box-shadow: none;
+}
+
+.search-input:focus {
+    border-color: #ee4d2d;
+}
+
+.search-button {
+    height: 48px;
+    padding: 0 30px;
+    border: none;
+    border-radius: 5px;
+    background: #ee4d2d;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.search-button:hover {
+    background: #d73211;
+}
+
+/* ================================
+   PRODUCT SECTIONS
+================================ */
+
+.container-fluid {
+    box-sizing: border-box;
+}
+
+hr {
+    max-width: 1200px;
+    border-top: 1px solid #eee;
+    margin: 25px auto;
+}
+
+
+</style>
+
+@section Styles {
+    <link rel="stylesheet" type="text/css" href="~/Content/myStyle/CustomerHome.css" />
+}
+
+<!-- BANNER QUẢNG CÁO -->
+<div class="banner-slider">
+
+    <div class="banner-slide active">
+        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1600&q=80"
+             alt="Balo du lịch">
+
+        <div class="banner-content">
+            <h1>BỘ SƯU TẬP BALO DU LỊCH 2026</h1>
+            <p>Giảm giá lên đến 30% cho các dòng balo chống nước chính hãng!</p>
+            <a href="@Url.Action("Index", "Home")" class="banner-btn">MUA NGAY</a>
+        </div>
+    </div>
+
+    <div class="banner-slide">
+        <img src="https://images.unsplash.com/photo-1622560480654-d96214fdc887?auto=format&fit=crop&w=1600&q=80"
+             alt="Balo laptop">
+
+        <div class="banner-content">
+            <h1>BALO LAPTOP CAO CẤP</h1>
+            <p>Thiết kế hiện đại – Bảo vệ laptop an toàn.</p>
+            <a href="@Url.Action("Index", "Home")" class="banner-btn">KHÁM PHÁ NGAY</a>
+        </div>
+    </div>
+
+    <div class="banner-slide">
+        <img src="https://images.unsplash.com/photo-1581605405669-fcdf81165afa?auto=format&fit=crop&w=1600&q=80"
+             alt="Balo thời trang">
+
+        <div class="banner-content">
+            <h1>PHONG CÁCH CỦA BẠN</h1>
+            <p>Khám phá những mẫu balo thời trang mới nhất.</p>
+            <a href="@Url.Action("Index", "Home")" class="banner-btn">XEM SẢN PHẨM</a>
+        </div>
+    </div>
+
+    <button type="button" class="banner-prev" onclick="changeBanner(-1)">&#10094;</button>
+    <button type="button" class="banner-next" onclick="changeBanner(1)">&#10095;</button>
+
+    <div class="banner-dots">
+        <span class="banner-dot active" onclick="showBanner(0)"></span>
+        <span class="banner-dot" onclick="showBanner(1)"></span>
+        <span class="banner-dot" onclick="showBanner(2)"></span>
+    </div>
+
+</div>
+<!-- PHẦN TÌM KIẾM SẢN PHẨM -->
+<section class="container-fluid searchProd">
+    <h2>Tìm kiếm sản phẩm</h2>
+    @using (Html.BeginForm("Index", "Home", FormMethod.Get))
+    {
+        <div class="form-group search-container">
+            @Html.TextBoxFor(m => m.SearchTerm, new
+            {
+                @class = "search-input",
+                placeholder = "Nhập tên, mô tả hoặc chủng loại sản phẩm"
+            })
+            <button type="submit" class="search-button">Tìm kiếm</button>
+        </div>
+    }
+</section>
+<hr />
+
+<!-- PHẦN SẢN PHẨM NỔI BẬT -->
+@Html.Partial("_PVFeatureProduct", Model)
+
+<!-- PHẦN SẢN PHẨM MỚI -->
+@Html.Partial("_PVNewProduct", Model)
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            var currentBanner = 0;
+            var banners = document.querySelectorAll(".banner-slide");
+            var dots = document.querySelectorAll(".banner-dot");
+            var timer;
+
+            if (banners.length === 0) return;
+
+            function showBannerInternal(index) {
+                banners[currentBanner].classList.remove("active");
+                dots[currentBanner].classList.remove("active");
+
+                currentBanner = (index + banners.length) % banners.length;
+
+                banners[currentBanner].classList.add("active");
+                dots[currentBanner].classList.add("active");
+            }
+
+            window.showBanner = function (index) {
+                showBannerInternal(index);
+                resetTimer();
+            };
+
+            window.changeBanner = function (direction) {
+                showBannerInternal(currentBanner + direction);
+                resetTimer();
+            };
+
+            function resetTimer() {
+                clearInterval(timer);
+
+                timer = setInterval(function () {
+                    showBannerInternal(currentBanner + 1);
+                }, 4000);
+            }
+
+            resetTimer();
+        });
+    </script>
+}

@@ -1,0 +1,620 @@
+﻿
+<!DOCTYPE html>
+@{
+    var cart = Session["Cart"] as _25dh110430_MyStore.Models.ViewModel.Cart;
+
+    var isLoggedIn = User.Identity.IsAuthenticated;
+    var username = isLoggedIn ? User.Identity.Name : "";
+
+    ViewBag.pmmodel = new _25dh110430_MyStore.Models.ViewModel.PersonalMenuVM
+    {
+        IsLoggedIn = isLoggedIn,
+        Username = username,
+        CartCount = cart != null && cart.Items != null ? cart.Items.Count() : 0
+    };
+}
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>My Store: @ViewBag.Title</title>
+
+    @Styles.Render("~/Content/css")
+    @RenderSection("Styles", required: false)
+
+    @Scripts.Render("~/bundles/modernizr")
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+        /* =========================
+           RESET
+        ========================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding-top: 75px;
+            background: #f5f5f5;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .navbar-fixed-top {
+            background: #111 !important;
+            border: none !important;
+            min-height: 70px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.18);
+        }
+
+        .navbar-container {
+            width: 95%;
+            max-width: 1400px;
+            min-height: 70px;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .navbar-header {
+            flex-shrink: 0;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            color: white !important;
+            font-size: 24px;
+            font-weight: 800;
+            padding: 0 !important;
+            height: auto !important;
+        }
+
+        .navbar-brand i {
+            color: #ee4d2d;
+            margin-right: 9px;
+            font-size: 25px;
+        }
+
+        .navbar-brand span {
+            color: #ee4d2d;
+        }
+
+        /* =========================
+           MENU
+        ========================= */
+
+        .navbar-nav-custom {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 5px;
+        }
+
+        .navbar-nav-custom > li {
+            position: relative;
+        }
+
+        .navbar-nav-custom > li > a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+            padding: 25px 13px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: .25s;
+            white-space: nowrap;
+        }
+
+        .navbar-nav-custom > li > a:hover {
+            color: #ee4d2d;
+            text-decoration: none;
+        }
+
+        /* =========================
+           DROPDOWN
+        ========================= */
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 210px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 18px rgba(0,0,0,.15);
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 13px 17px;
+            color: #333;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .dropdown-content a:hover {
+            background: #fff1ed;
+            color: #ee4d2d;
+            padding-left: 23px;
+            text-decoration: none;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        /* =========================
+           ACCOUNT
+        ========================= */
+
+        #account-name {
+            color: white !important;
+        }
+
+        #account-name i {
+            margin-right: 5px;
+        }
+
+        /* =========================
+           CART
+        ========================= */
+
+        #cart-count {
+            color: #ee4d2d;
+            font-weight: bold;
+        }
+
+        .navbar-nav-custom > li:last-child > div > a {
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .navbar-nav-custom > li:last-child > div > a:hover {
+            color: #ee4d2d;
+        }
+
+        /* =========================
+           MAIN CONTENT
+        ========================= */
+
+        .bsg-main-wrapper {
+            width: 100%;
+            min-height: 500px;
+            padding: 20px 0 40px;
+        }
+
+        .bsg-container {
+            width: 95%;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .bsg-card-container {
+            width: 100%;
+            min-height: 400px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .bsg-footer {
+            background: #171717;
+            color: #ccc;
+            margin-top: 35px;
+            padding-top: 45px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 35px;
+            padding-bottom: 35px;
+        }
+
+        .footer-col h4 {
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 20px;
+            padding-bottom: 12px;
+            position: relative;
+        }
+
+        .footer-col h4::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 2px;
+            background: #ee4d2d;
+        }
+
+        .footer-col p {
+            font-size: 13px;
+            line-height: 1.8;
+            color: #bbb;
+            margin-bottom: 12px;
+        }
+
+        .footer-col strong {
+            color: white;
+        }
+
+        .footer-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: #bbb;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+        .footer-links a:hover {
+            color: #ee4d2d;
+            padding-left: 5px;
+            text-decoration: none;
+        }
+
+        /* =========================
+           COPYRIGHT
+        ========================= */
+
+        .bsg-copyright {
+            background: #0d0d0d;
+            padding: 17px 0;
+            text-align: center;
+        }
+
+        .bsg-copyright p {
+            color: #999;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1100px) {
+
+            .navbar-container {
+                width: 98%;
+            }
+
+            .navbar-brand {
+                font-size: 20px;
+            }
+
+            .navbar-nav-custom > li > a {
+                padding: 25px 8px;
+                font-size: 12px;
+            }
+
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            body {
+                padding-top: 120px;
+            }
+
+            .navbar-fixed-top {
+                min-height: auto;
+            }
+
+            .navbar-container {
+                flex-direction: column;
+                padding: 12px 0;
+                gap: 10px;
+            }
+
+            .navbar-brand {
+                font-size: 22px;
+            }
+
+            .navbar-nav-custom {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0;
+            }
+
+            .navbar-nav-custom > li > a {
+                padding: 10px 8px;
+                font-size: 12px;
+            }
+
+            .dropdown-content {
+                min-width: 170px;
+            }
+
+            .bsg-main-wrapper {
+                padding-top: 10px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            body {
+                padding-top: 145px;
+            }
+
+            .navbar-nav-custom > li > a {
+                padding: 8px 6px;
+                font-size: 11px;
+            }
+
+            .bsg-container {
+                width: 96%;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .bsg-footer {
+                padding-top: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <header class="navbar navbar-default navbar-fixed-top">
+        <div class="navbar-container">
+
+            <!-- LOGO -->
+            <div class="navbar-header">
+                <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+                    <i class="fas fa-mountain"></i>
+                    balosaigon<span>.com</span>
+                </a>
+            </div>
+
+            <!-- MENU -->
+            <ul class="navbar-nav-custom">
+
+                <li>
+                    <a href="@Url.Action("Index", "Home")">
+                        <i class="fas fa-home"></i> Trang Chủ
+                    </a>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">
+                        Balo <i class="fas fa-angle-down"></i>
+                    </a>
+
+                    <div class="dropdown-content">
+                        <a href="@Url.Action("LapTop", "Products")">Balo Laptop</a>
+                        <a href="@Url.Action("Travel", "Products")">Balo Du Lịch</a>
+                        <a href="@Url.Action("Camera", "Products")">Balo Máy Ảnh</a>
+                        <a href="@Url.Action("Soldier", "Products")">Balo Quân Đội</a>
+                    </div>
+                </li>
+
+                <li class="dropdown">
+                    <a href="javascript:void(0)">
+                        Túi Xách <i class="fas fa-angle-down"></i>
+                    </a>
+
+                    <div class="dropdown-content">
+                        <a href="@Url.Action("LapTopBag", "Products")">Túi Đựng Laptop</a>
+                        <a href="@Url.Action("TravelBag", "Products")">Túi Du Lịch</a>
+                        <a href="@Url.Action("CameraBag", "Products")">Túi Máy Ảnh</a>
+                        <a href="@Url.Action("CrossBodyBag", "Products")">Túi Đeo Chéo</a>
+                    </div>
+                </li>
+
+                <li>
+                    <a href="#">Phụ Kiện</a>
+                </li>
+
+                <li>
+                    <a href="#">May Theo Yêu Cầu</a>
+                </li>
+
+                <!-- TÀI KHOẢN -->
+                <li class="dropdown">
+                    <a href="javascript:void(0)" id="account-name">
+                        <i class="fas fa-user"></i>
+
+                        @if (ViewBag.pmmodel.IsLoggedIn)
+                        {
+                            <text>Xin chào, @ViewBag.pmmodel.Username</text>
+                        }
+                        else
+                        {
+                            <text>Tài khoản</text>
+                        }
+
+                        <i class="fas fa-angle-down"></i>
+                    </a>
+
+                    <div class="dropdown-content" style="right:0; left:auto;">
+
+                        @if (ViewBag.pmmodel.IsLoggedIn)
+                        {
+                            <a href="@Url.Action("Profile", "Account")">
+                                <i class="fas fa-user-circle"></i> Thông tin tài khoản
+                            </a>
+
+                            <a href="@Url.Action("OrderHistory", "Order")">
+                                <i class="fas fa-history"></i> Lịch sử mua hàng
+                            </a>
+
+                            <a href="@Url.Action("Logout", "Account")">
+                                <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Register", "Account")">
+                                <i class="fas fa-user-plus"></i> Đăng ký
+                            </a>
+
+                            <a href="@Url.Action("Login", "Account")">
+                                <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                            </a>
+                        }
+
+                    </div>
+                </li>
+
+                <!-- GIỎ HÀNG -->
+                <li>
+                    <div>
+                        <a href="@Url.Action("Index", "Cart")">
+                            <i class="fas fa-shopping-bag"></i>
+                            Giỏ hàng
+                            (<span id="cart-count">@ViewBag.pmmodel.CartCount</span>)
+                        </a>
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="bsg-main-wrapper">
+        <div class="bsg-container">
+            <div class="bsg-card-container">
+                @RenderBody()
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bsg-footer">
+
+        <div class="bsg-container">
+
+            <div class="footer-grid">
+
+                <div class="footer-col">
+                    <h4>VỀ BALOSAIGON</h4>
+
+                    <p>
+                        BaloSaigon.com chuyên phân phối các loại Balo Laptop,
+                        Balo Du Lịch, Vali, Túi Xách chính hãng từ các thương hiệu
+                        hàng đầu thế giới.
+                    </p>
+
+                    <p>
+                        <strong>Địa chỉ:</strong>
+                        Cống Quỳnh, P. Nguyễn Cư Trinh, Quận 1, TP.HCM
+                    </p>
+                </div>
+
+                <div class="footer-col">
+                    <h4>DANH MỤC SẢN PHẨM</h4>
+
+                    <ul class="footer-links">
+                        <li>
+                            <a href="@Url.Action("LapTop", "Products")">
+                                Balo Laptop Chống Nước
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("TravelBag", "Products")">
+                                Balo Du Lịch / Phượt
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("CrossBodyBag", "Products")">
+                                Túi Bao Tử / Crossbody
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="@Url.Action("Travel", "Products")">
+                                Vali Kéo Du Lịch
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>CHÍNH SÁCH</h4>
+
+                    <ul class="footer-links">
+                        <li><a href="#">Chính sách bảo hành</a></li>
+                        <li><a href="#">Chính sách đổi trả trong 7 ngày</a></li>
+                        <li><a href="#">Phương thức thanh toán</a></li>
+                        <li><a href="#">Chính sách vận chuyển</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>TỔNG ĐÀI HỖ TRỢ</h4>
+
+                    <p>Mua hàng online: <strong>0834.273.273</strong></p>
+                    <p>Góp ý, khiếu nại: <strong>0902.920.670</strong></p>
+                    <p>Email: info@balosaigon.com</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- COPYRIGHT -->
+        <div class="bsg-copyright">
+            <div class="bsg-container">
+                <p>
+                    &copy; @DateTime.Now.Year BaloSaigon.com.
+                    Dự án bài tập luận ASP.NET MVC.
+                </p>
+            </div>
+        </div>
+
+    </footer>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("Scripts", required: false)
+
+</body>
+</html>
